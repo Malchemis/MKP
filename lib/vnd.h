@@ -1,11 +1,7 @@
-
-
 #ifndef VND_H
 #define VND_H
 
 #include "data_structure.h"
-#include "utils.h"
-#include "local_search.h"
 
 /**
  * @brief Variable Neighborhood Descent routine.

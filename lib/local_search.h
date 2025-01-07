@@ -2,7 +2,6 @@
 #define LOCAL_SEARCH_H
 
 #include "data_structure.h"
-#include "utils.h"
 
 /**
  * @brief Perform a local search with a 1-flip neighborhood or exchange neighborhood.

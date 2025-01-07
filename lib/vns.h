@@ -2,8 +2,6 @@
 #define VNS_H
 
 #include "data_structure.h"
-#include "utils.h"
-#include "vnd.h"
 
 /**
  * @brief Variable Neighborhood Search:
