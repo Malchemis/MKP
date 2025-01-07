@@ -9,7 +9,7 @@
  * @param prob The problem instance.
  * @param current_sol The current solution (improved in place).
  */
-void local_search(const Problem *prob, Solution *current_sol);
+void local_search_flip(const Problem *prob, Solution *current_sol);
 
 #endif
 

@@ -21,7 +21,7 @@ void free_solution(Solution *sol) {
 
 void swap_solutions(Solution *s1, Solution *s2) {
     // Swap pointers and metadata
-    int temp_n = s1->n;
+    const int temp_n = s1->n;
     s1->n = s2->n;
     s2->n = temp_n;
 
@@ -29,11 +29,45 @@ void swap_solutions(Solution *s1, Solution *s2) {
     s1->x = s2->x;
     s2->x = temp_x;
 
-    float temp_val = s1->value;
+    const float temp_val = s1->value;
     s1->value = s2->value;
     s2->value = temp_val;
 
-    bool temp_feas = s1->feasible;
+    const bool temp_feas = s1->feasible;
     s1->feasible = s2->feasible;
     s2->feasible = temp_feas;
+}
+
+void print_problem(const Problem *p) {
+    printf("Number of objects: %d\n", p->n);
+    printf("Number of constraints: %d\n", p->m);
+    printf("Capacities: ");
+    for (int i = 0; i < p->m; i++) {
+        printf("%d ", (int) p->capacities[i]);
+    }
+    printf("\n");
+    printf("Coefficients: ");
+    for (int i = 0; i < p->n; i++) {
+        printf("%d ", (int) p->weights[i]);
+    }
+    printf("\n");
+    printf("Weights:\n");
+    for (int i = 0; i < p->n; i++) {
+        for (int j = 0; j < p->m; j++) {
+            printf("%d ", (int) p->weights[i * p->m + j]);
+        }
+        printf("\n");
+    }
+}
+
+void print_solution(const Solution *s) {
+    printf("Value: %f\n", s->value);
+    printf("Feasible: %s\n", s->feasible ? "Yes" : "No");
+    printf("Selected items: ");
+    for (int i = 0; i < s->n; i++) {
+        if (s->x[i] > 0.5f) {
+            printf("%d ", i);
+        }
+    }
+    printf("\n");
 }

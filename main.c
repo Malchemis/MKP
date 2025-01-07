@@ -55,14 +55,14 @@ int main(const int argc, char *argv[]) {
 
     // Apply method
     if (strcmp(method, "LS") == 0) {
-        local_search(&prob, &sol);
+        local_search_flip(&prob, &sol);
     } else if (strcmp(method, "VND") == 0) {
         vnd(&prob, &sol, eval_func);
     } else if (strcmp(method, "VNS") == 0) {
         vns(&prob, &sol, eval_func);
     } else {
         fprintf(stderr, "Unknown method %s. Using LS.\n", method);
-        local_search(&prob, &sol);
+        local_search_flip(&prob, &sol);
     }
 
     const clock_t end = clock();

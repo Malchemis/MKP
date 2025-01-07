@@ -18,7 +18,7 @@
  * After checking all neighbors, if a best-improvement was found, apply it and repeat.
  * Stop when no improvement is found.
  */
-void local_search(const Problem *prob, Solution *current_sol)
+void local_search_flip(const Problem *prob, Solution *current_sol)
 {
     // Allocate current usage
     const auto current_usage = (float*)malloc(prob->m * sizeof(float));
@@ -121,3 +121,4 @@ void local_search(const Problem *prob, Solution *current_sol)
     free(best_delta_usage);
     free(current_usage);
 }
+
