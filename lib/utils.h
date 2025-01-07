@@ -2,7 +2,6 @@
 #define UTILS_H
 
 #include "data_structure.h"
-#include <stdbool.h>
 
 /**
  * @brief Parse an MKP instance from a given file.

@@ -4,8 +4,6 @@
 //
 
 #include "lib/vns.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 void vns(const Problem *prob, Solution *sol, void (*eval_func)(const Problem*, Solution*)) {
     // Placeholder:

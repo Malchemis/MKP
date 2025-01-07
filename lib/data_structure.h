@@ -1,8 +1,6 @@
 #ifndef DATA_STRUCTURE_H
 #define DATA_STRUCTURE_H
 
-#include <stdbool.h>
-
 /**
  * @brief Represents the MKP problem data.
  */
