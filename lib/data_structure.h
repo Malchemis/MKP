@@ -60,4 +60,6 @@ void free_solution(Solution *sol);
  */
 void swap_solutions(Solution *s1, Solution *s2);
 
+void copy_solution(const Solution *src, Solution *dst);
+
 #endif

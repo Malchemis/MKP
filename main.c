@@ -63,7 +63,7 @@ int main(const int argc, char *argv[]) {
         local_search_flip(&prob, &sol, k, mode);
     } else if (strcmp(method, "VND") == 0) {
         printf("Using VND method.\n");
-        vnd(&prob, &sol, 100, 500);
+        vnd(&prob, &sol, 100, 500, k, mode);
     } else if (strcmp(method, "VNS") == 0) {
         printf("Using VNS method.\n");
         vns(&prob, &sol, eval_func);

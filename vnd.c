@@ -5,7 +5,7 @@
 #include <string.h>
 #include <utils.h>
 
-void vnd(const Problem *prob, Solution *sol, const int max_iter, const int k_max) {
+void vnd(const Problem *prob, Solution *sol, const int max_iter, const int k_max, const int ls_k, const LSMode ls_mode) {
     int iter = 0;
     int k = 0;
     Solution candidate_sol;
@@ -35,7 +35,7 @@ void vnd(const Problem *prob, Solution *sol, const int max_iter, const int k_max
             }
 
             // Search for a better solution
-            local_search_flip(prob, &candidate_sol);
+            local_search_flip(prob, &candidate_sol, ls_k, ls_mode);
 
             // Update best solution
             if (candidate_sol.value > sol->value) {

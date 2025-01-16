@@ -1,6 +1,7 @@
 #include "lib/data_structure.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void allocate_solution(Solution *sol, const int n) {
     sol->n = n;
@@ -38,15 +39,22 @@ void swap_solutions(Solution *s1, Solution *s2) {
     s2->feasible = temp_feas;
 }
 
-Solution copy_solution(const Solution *src) {
-    Solution dest;
-    allocate_solution(&dest, src->n);
-    for (int j = 0; j < src->n; j++) {
-        dest.x[j] = src->x[j];
+
+void copy_solution(const Solution *src, Solution *dst) {
+    dst->value = src->value;
+    dst->feasible = src->feasible;
+    dst->n = src->n;
+
+    if (src->x != NULL && src->n > 0) {
+        if (dst->x == NULL) {
+            // Handle allocation failure (e.g., exit or return an empty solution)
+            perror("Failed to allocate memory for solution vector");
+            exit(EXIT_FAILURE);
+        }
+        memcpy(dst->x, src->x, src->n * sizeof(float));
+    } else {
+        dst->x = NULL;
     }
-    dest.value = src->value;
-    dest.feasible = src->feasible;
-    return dest;
 }
 
 void print_problem(const Problem *p) {

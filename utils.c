@@ -191,20 +191,3 @@ void save_solution(const char *filename, const Solution *sol) {
 
     fclose(fout);
 }
-
-void copy_solution(const Solution *src, Solution *dst) {
-    dst->value = src->value;
-    dst->feasible = src->feasible;
-    dst->n = src->n;
-
-    if (src->x != NULL && src->n > 0) {
-        if (dst->x == NULL) {
-            // Handle allocation failure (e.g., exit or return an empty solution)
-            perror("Failed to allocate memory for solution vector");
-            exit(EXIT_FAILURE);
-        }
-        memcpy(dst->x, src->x, src->n * sizeof(float));
-    } else {
-        dst->x = NULL;
-    }
-}

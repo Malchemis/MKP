@@ -68,4 +68,3 @@ void save_solution(const char *filename, const Solution *sol);
  * @returns A copy of the source solution.
  */
 
-void copy_solution(const Solution *src, Solution *dst);
