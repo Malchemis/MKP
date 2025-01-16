@@ -12,7 +12,7 @@
 int parse_instance(const char *filename, Problem *prob);
 
 /**
- * @brief Free memory allocated for a problem.
+ * @brief Free memory allocated for a problem and set pointers to NULL.
  * @param prob The problem to free.
  */
 void free_problem(Problem *prob);

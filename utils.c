@@ -21,6 +21,12 @@ static int read_array(FILE *fin, float *arr, const int count) {
     }
     return 0;
 }
+/* Internal helper to compare ratios in descending order */
+int compare_ratios_descending(const void *a, const void *b) {
+    const auto fa = (const float*)a;
+    const auto fb = (const float*)b;
+    return (fa[0] < fb[0]) - (fa[0] > fb[0]); // returns -1, 0, 1 for a < b, a == b, a > b
+}
 
 int parse_instance(const char *filename, Problem *prob) {
     // Read instance file, and check for errors
@@ -38,12 +44,15 @@ int parse_instance(const char *filename, Problem *prob) {
     }
 
     // Allocate memory for problem data
-    prob->c = (float*)malloc(prob->n * sizeof(float));
-    prob->capacities = (float*)malloc(prob->m * sizeof(float));
-    prob->weights = (float*)malloc(prob->m * prob->n * sizeof(float));
+    prob->c              = (float*)malloc(prob->n * sizeof(float));
+    prob->capacities     = (float*)malloc(prob->m * sizeof(float));
+    prob->weights        = (float*)malloc(prob->m * prob->n * sizeof(float));
+    prob->sum_of_weights = (float*)calloc(prob->n, sizeof(float));
+    prob->ratios         = (float*)calloc(prob->n, sizeof(float));
+    prob->candidate_list = (float*)malloc(prob->n * sizeof(float));
 
     // Check for allocation errors
-    if (!prob->c || !prob->capacities || !prob->weights) {
+    if (!prob->c || !prob->capacities || !prob->weights || !prob->sum_of_weights || !prob->ratios || !prob->candidate_list) {
         fprintf(stderr, "Memory allocation error.\n");
         fclose(fin);
         return -1;
@@ -54,6 +63,20 @@ int parse_instance(const char *filename, Problem *prob) {
     if (read_array(fin, prob->capacities, prob->m) != 0) { fclose(fin); return -1; }
     if (read_array(fin, prob->weights, prob->m * prob->n) != 0) { fclose(fin); return -1; }
 
+    // Precompute for each item j, the sum of weights w_ij and ratio c_j/w_ij
+    for (int j = 0; j < prob->n; j++) {
+        for (int i = 0; i < prob->m; i++) {
+            prob->sum_of_weights[j] += prob->weights[i * prob->n + j];
+        }
+        prob->ratios[j] = prob->c[j] / prob->sum_of_weights[j];
+    }
+
+    // Fill candidate_list : Using quicksort, sort the items by decreasing ratio.
+    for (int j = 0; j < prob->n; j++) {
+        prob->candidate_list[j] = (float)j;
+    }
+    qsort(prob->candidate_list, prob->n, sizeof(float), compare_ratios_descending);
+
     fclose(fin);
     return 0;
 }
@@ -63,6 +86,9 @@ void free_problem(Problem *prob) {
     free(prob->c); prob->c = nullptr;
     free(prob->capacities); prob->capacities = nullptr;
     free(prob->weights); prob->weights = nullptr;
+    free(prob->sum_of_weights); prob->sum_of_weights = nullptr;
+    free(prob->ratios); prob->ratios = nullptr;
+    free(prob->candidate_list); prob->candidate_list = nullptr;
 }
 
 bool check_feasibility(const Problem *prob, const Solution *sol) {

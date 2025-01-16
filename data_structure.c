@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void allocate_solution(Solution *sol, int n) {
+void allocate_solution(Solution *sol, const int n) {
     sol->n = n;
     sol->x = (float*)malloc(n * sizeof(float));
     if (!sol->x) {
@@ -36,6 +36,17 @@ void swap_solutions(Solution *s1, Solution *s2) {
     const bool temp_feas = s1->feasible;
     s1->feasible = s2->feasible;
     s2->feasible = temp_feas;
+}
+
+Solution copy_solution(const Solution *src) {
+    Solution dest;
+    allocate_solution(&dest, src->n);
+    for (int j = 0; j < src->n; j++) {
+        dest.x[j] = src->x[j];
+    }
+    dest.value = src->value;
+    dest.feasible = src->feasible;
+    return dest;
 }
 
 void print_problem(const Problem *p) {

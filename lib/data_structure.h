@@ -5,11 +5,14 @@
  * @brief Represents the MKP problem data.
  */
 typedef struct {
-    int n;              /**< Number of items */
-    int m;              /**< Number of constraints */
-    float *c;           /**< Objective coefficients, length n */
-    float *capacities;  /**< Capacities for each constraint, length m */
-    float *weights;     /**< Weights matrix, length m*n, row-major: W[i,j] = weights[i*n+j] */
+    int n;                  /**< Number of items */
+    int m;                  /**< Number of constraints */
+    float *c;               /**< Objective coefficients, length n */
+    float *capacities;      /**< Capacities for each constraint, length m */
+    float *weights;         /**< Weights matrix, length m*n, row-major: W[i,j] = weights[i*n+j] */
+    float *sum_of_weights;  /**< length n, sum of each item's weight across all constraints */
+    float *ratios;          /**< length n, ratio c[j] / sum_of_weights[j] */
+    float *candidate_list;  /**< length n, indexes of items sorted by ratio */
 } Problem;
 
 /**
@@ -24,6 +27,15 @@ typedef struct {
     float value; /**< Objective value of this solution */
     bool feasible; /**< Whether this solution is feasible or not */
 } Solution;
+
+
+/**
+ * @brief Represents the local search mode.
+ */
+typedef enum {
+    LS_FIRST_IMPROVEMENT,
+    LS_BEST_IMPROVEMENT
+} LSMode;
 
 /**
  * @brief Allocates memory for a solution of size n.
