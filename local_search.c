@@ -2,7 +2,6 @@
 #include "lib/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 void repair_solution(const Problem *prob,
                      const Solution *sol,
