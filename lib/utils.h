@@ -61,3 +61,11 @@ bool check_feasibility(const Problem *prob, const Solution *sol);
 void save_solution(const char *filename, const Solution *sol);
 
 #endif
+
+/**
+ * @brief Creates a copy of a solution.
+ * @param src The source solution.
+ * @returns A copy of the source solution.
+ */
+
+void copy_solution(const Solution *src, Solution *dst);

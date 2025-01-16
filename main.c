@@ -59,10 +59,13 @@ int main(const int argc, char *argv[]) {
 
     // Apply method
     if (strcmp(method, "LS") == 0) {
+        printf("Using Local Search (Flip) method.\n");
         local_search_flip(&prob, &sol, k, mode);
     } else if (strcmp(method, "VND") == 0) {
-        vnd(&prob, &sol, eval_func);
+        printf("Using VND method.\n");
+        vnd(&prob, &sol, 100, 500);
     } else if (strcmp(method, "VNS") == 0) {
+        printf("Using VNS method.\n");
         vns(&prob, &sol, eval_func);
     } else {
         fprintf(stderr, "Unknown method %s. Using LS.\n", method);
