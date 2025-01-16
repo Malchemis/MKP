@@ -8,8 +8,9 @@
  * Uses two local search procedures and systematically changes neighborhoods.
  * @param prob The problem instance.
  * @param sol The solution (improved in place if a better solution is found).
- * @param eval_func CPU or GPU evaluation function.
+ * @param max_iter Maximum number of iterations.
+ * @param k_max Maximum number of neighborhoods to try.
  */
-void vnd(const Problem *prob, Solution *sol, void (*eval_func)(const Problem*, Solution*));
+void vnd(const Problem *prob, Solution *sol, const int max_iter, const int k_max);
 
 #endif
