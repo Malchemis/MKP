@@ -28,6 +28,10 @@ typedef struct {
     bool feasible; /**< Whether this solution is feasible or not */
 } Solution;
 
+typedef struct Individual {
+    Solution sol;
+    float fitness;
+} Individual;
 
 /**
  * @brief Represents the local search mode.

@@ -16,19 +16,5 @@
  */
 void local_search_flip(const Problem *prob, Solution *current_sol, int max_checks, LSMode mode);
 
-
-/**
- * @brief Repairs the solution if it violates capacity constraints.
- *
- * Simple strategy: while any constraint is violated, remove one item (x_j=0)
- * that yields the smallest "value/cost" ratio (or largest weight per value).
- *
- * @param prob       The MKP problem instance
- * @param sol        The solution (possibly infeasible) to repair
- * @param usage      Current usage array of length m
- * @param cur_value  Current objective value (updated in place if items removed)
- */
-void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cur_value);
-
 #endif
 

@@ -7,7 +7,6 @@
 
 #include <local_search.h>
 
-#include "lib/vnd.h"
 #include <stdlib.h>
 #include <string.h>
 #include <utils.h>
@@ -28,13 +27,6 @@ void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const
         while (k < k_max && k < prob->n) {
             // Shake
             shake(prob, sol, &candidate_sol, k);
-
-            // Check feasibility
-            const bool feasible = check_feasibility(prob, &candidate_sol);
-            if (!feasible) {
-                k++;
-                continue;
-            }
 
             // Search for a better solution
             local_search_flip(prob, &candidate_sol, ls_k, ls_mode);
@@ -67,13 +59,13 @@ void shake(const Problem *p, const Solution *s, Solution *candidate, const int k
     // If k > n, there's no point flipping more than n unique indices:
     const int flips = (k < n) ? k : n;
 
-    // Create an array of all indices [0, 1, 2, ..., n-1]
+    // Create an array of all indices
     int *indices = malloc(n * sizeof(int));
     for (int i = 0; i < n; i++) {
         indices[i] = i;
     }
 
-    // Fisher-Yates shuffle to randomize the order of indices
+    // Randomize the order of indices
     for (int i = n - 1; i > 0; i--) {
         const int j = rand() % (i + 1);
         // Swap
@@ -95,4 +87,12 @@ void shake(const Problem *p, const Solution *s, Solution *candidate, const int k
     }
 
     free(indices);
+
+    // Check feasibility
+    if (!check_feasibility(p, candidate)) {
+        const auto usage   = (float*)malloc(p->m * sizeof(float));
+        compute_usage_from_solution(p, candidate, usage);
+        compute_usage_from_solution(p, candidate, usage);
+        repair_solution(p, candidate, usage, &candidate->value);
+    }
 }

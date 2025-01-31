@@ -70,7 +70,7 @@ int main(const int argc, char *argv[]) {
         vnd(&prob, &sol, 100, 500, k, mode);
     } else if (strcmp(method, "VNS") == 0) {
         printf("Using VNS method.\n");
-        vns(&prob, &sol, 20, 500, k, mode);
+        vns(&prob, &sol, 30, 500, k, mode);
     } else if (strcmp(method, "GD") == 0) {
         constexpr int max_iters = 10;
         constexpr float learning_rate = 1e-2f;

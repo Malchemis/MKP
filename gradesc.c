@@ -51,24 +51,6 @@ float compute_loss(const Problem *prob, const float lambda, const float *x_hat, 
     return loss;
 }
 
-/**
- * @brief Computes usage array from a 0-1 solution x (stored in out_sol->x).
- *
- * usage[j] = sum_i weights[j*n + i] * out_sol->x[i].
- *
- * @param prob   The MKP instance
- * @param sol    The (binary) solution
- * @param usage  Array of length m to fill in
- */
-static void compute_usage_from_solution(const Problem *prob, const Solution *sol, float *usage) {
-    for (int j = 0; j < prob->m; j++) {
-        float sum_w = 0.0f;
-        for (int i = 0; i < prob->n; i++) {
-            sum_w += prob->weights[j * prob->n + i] * sol->x[i];
-        }
-        usage[j] = sum_w;
-    }
-}
 
 void gradient_solver(const Problem *prob, const float lambda, const float learning_rate,
                      const int max_iters, Solution *out_sol){
