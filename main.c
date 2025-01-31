@@ -8,6 +8,7 @@
 #include "lib/local_search.h"
 #include "lib/vnd.h"
 #include "lib/vns.h"
+#include "lib/ml_solver.h"
 
 /**
  * @brief Main entry point.
@@ -63,11 +64,20 @@ int main(const int argc, char *argv[]) {
         local_search_flip(&prob, &sol, k, mode);
     } else if (strcmp(method, "VND") == 0) {
         printf("Using VND method.\n");
-        vnd(&prob, &sol, 100, 500, k, mode);
+        constexpr int max_iters = 1000;
+        const int max_neigh = prob.n;
+        vnd(&prob, &sol, max_iters, max_neigh, k, mode);
     } else if (strcmp(method, "VNS") == 0) {
         printf("Using VNS method.\n");
         vns(&prob, &sol, eval_func);
-    } else {
+    } else if (strcmp(method, "GD") == 0) {
+        constexpr int max_iters = 1;
+        constexpr float learning_rate = 1e-3f;
+        constexpr float lambda = 1e-5f;
+        printf("Using Gradient Descent method.\n");
+        gradient_solver(&prob, lambda, learning_rate, max_iters, &sol);
+    }
+    else {
         fprintf(stderr, "Unknown method %s. Using LS.\n", method);
         local_search_flip(&prob, &sol, k, mode);
     }
@@ -75,7 +85,7 @@ int main(const int argc, char *argv[]) {
     const clock_t end = clock();
     const double cpu_time_used = (double)(end - start) / CLOCKS_PER_SEC;
 
-    printf("Final Solution:\n");
+    printf("\nFinal Solution:\n");
     printf("Value: %f\n", sol.value);
     printf("Feasible: %s\n", sol.feasible ? "Yes" : "No");
     printf("Time: %f seconds\n", cpu_time_used);

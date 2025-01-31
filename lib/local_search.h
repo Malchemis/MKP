@@ -23,9 +23,8 @@ void local_search_flip(const Problem *prob, Solution *current_sol, int k, LSMode
  * @param sol        The solution (possibly infeasible) to repair
  * @param usage      Current usage array of length m
  * @param cur_value  Current objective value (updated in place if items removed)
- * @param sum_of_weights Precomputed sum of weights for each item j
  */
-void repair_solution(const Problem *prob, const Solution *sol, float *usage, float *cur_value, const float *sum_of_weights);
+void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cur_value);
 
 #endif
 

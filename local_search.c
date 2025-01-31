@@ -3,22 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void repair_solution(const Problem *prob,
-                     const Solution *sol,
-                     float *usage,
-                     float *cur_value,
-                     const float *sum_of_weights)
-{
-    // Count how many items are currently 1
-    int items_in_solution = 0;
-    for (int j = 0; j < prob->n; j++) {
-        if (sol->x[j] > 0.5f) {
-            items_in_solution++;
-        }
-    }
-
-    // Remove up to 'items_in_solution' items if infeasible
-    for (int iteration = 0; iteration < items_in_solution; iteration++) {
+void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cur_value) {
+    // We can remove up to n items
+    for (int iteration = 0; iteration < prob->n; iteration++) {
         // Check feasibility
         bool feasible = true;
         for (int i = 0; i < prob->m; i++) {
@@ -28,6 +15,7 @@ void repair_solution(const Problem *prob,
             }
         }
         if (feasible) {
+            sol->feasible = true;
             break; // done
         }
 
@@ -39,7 +27,7 @@ void repair_solution(const Problem *prob,
             if (sol->x[j] < 0.5f) continue; // skip items not in the solution
 
             // ratio = c[j] / (sum_of_weights[j] + 1e-9f)
-            const float ratio = prob->c[j] / (sum_of_weights[j] + 1e-9f);
+            const float ratio = prob->ratios[j];
 
             if (ratio < worst_ratio || worst_item == -1) {
                 worst_ratio = ratio;
@@ -61,14 +49,7 @@ void repair_solution(const Problem *prob,
     }
 }
 
-void local_search_flip(const Problem *prob,
-                       Solution *current_sol,
-                       int k,
-                       LSMode mode)
-{
-    // We'll use prob->sum_of_weights in repair
-    const float *sum_w = prob->sum_of_weights;
-
+void local_search_flip(const Problem *prob, Solution *current_sol, const int k, const LSMode mode) {
     // usage of the current solution
     auto current_usage = (float*)malloc(prob->m * sizeof(float));
     if (!current_usage) {
@@ -170,14 +151,14 @@ void local_search_flip(const Problem *prob,
             }
         }
         if (infeasible) {
-            repair_solution(prob, &candidate_sol, candidate_usage, &new_candidate_value, sum_w);
+            repair_solution(prob, &candidate_sol, candidate_usage, &new_candidate_value);
         }
 
         // Revert if not strictly better
         if (new_candidate_value <= candidate_value) {
             // do nothing => revert
         } else {
-            // Accept
+            // Accept => update current solution
             improved = true;
             candidate_sol.value = new_candidate_value;
 
