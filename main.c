@@ -96,8 +96,6 @@ int main(const int argc, char *argv[]) {
     printf("Method:   %s\n", args.method);
     printf("Max Time: %.2f sec\n", args.max_time);
 
-    printf(args.log_level == DEBUG ? "Verbose:  DEBUG\n" : "Verbose:  INFO\n");
-
     // Decide which approach to run
     if (strcmp(args.method, "MULTI-GD-VNS") == 0) {
         multi_start_gd_vns(&prob, &args, eval_func, &sol);

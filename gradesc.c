@@ -81,7 +81,6 @@ static void freeze_highest_thetas(const Problem *prob, float *theta, bool *froze
 
 void gradient_solver(const Problem *prob, const float lambda, const float learning_rate,
                      const int max_no_improvement, Solution *out_sol, const LogLevel verbose, const clock_t start, const float max_time) {
-    printf(verbose == DEBUG ? "Verbose:  DEBUG\n" : "Verbose:  INFO\n");
     const int n = prob->n;
     const int m = prob->m;
 
