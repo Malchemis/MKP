@@ -24,7 +24,7 @@
  * @param prob          Pointer to the MKP instance.
  * @param lambda        Penalty coefficient for constraints.
  * @param learning_rate The step size for gradient updates.
- * @param max_no_improvements The number of iterations without improvement before stopping.
+ * @param max_no_improvement The number of iterations without improvement before stopping.
  * @param out_sol       The output solution.
  * @param verbose       The verbosity level (NONE, INFO, DEBUG).
  * @param start         The start time for time limit.
@@ -33,7 +33,7 @@
 void gradient_solver(const Problem *prob,
                      float lambda,
                      float learning_rate,
-                     int max_no_improvements,
+                     int max_no_improvement,
                      Solution *out_sol,
                      LogLevel verbose,
                      clock_t start,
