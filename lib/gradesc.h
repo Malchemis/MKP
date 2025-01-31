@@ -3,6 +3,7 @@
 
 #include <time.h>
 #include <data_structure.h>
+#include <utils.h>
 
 
 /**
@@ -23,17 +24,19 @@
  * @param prob          Pointer to the MKP instance.
  * @param lambda        Penalty coefficient for constraints.
  * @param learning_rate The step size for gradient updates.
- * @param max_iters     Number of gradient descent iterations.
- * @param out_sol       Output solution (allocated by caller).
- * @param start_time    Start time for time limit.
- * @param max_time      Maximum allowed time.
+ * @param max_no_improvements The number of iterations without improvement before stopping.
+ * @param out_sol       The output solution.
+ * @param verbose       The verbosity level (NONE, INFO, DEBUG).
+ * @param start         The start time for time limit.
+ * @param max_time      The maximum allowed time.
  */
 void gradient_solver(const Problem *prob,
                      float lambda,
                      float learning_rate,
-                     int max_iters,
+                     int max_no_improvements,
                      Solution *out_sol,
-                     clock_t start_time,
+                     LogLevel verbose,
+                     clock_t start,
                      float max_time);
 
 #endif // GRADESC_H

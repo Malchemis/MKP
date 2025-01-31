@@ -14,10 +14,8 @@
  * @param current_sol Pointer to the current solution (will be modified in place).
  * @param max_checks  Maximum number of flips to try (or number of items to explore).
  * @param mode        Local search mode: LS_FIRST_IMPROVEMENT or LS_BEST_IMPROVEMENT.
- * @param start       Start time for time limit.
- * @param max_time    Maximum allowed time.
  */
-void local_search_flip(const Problem *prob, Solution *current_sol, int max_checks, LSMode mode, clock_t start, float max_time);
+void local_search_flip(const Problem *prob, Solution *current_sol, int max_checks, LSMode mode);
 
 
 /**
@@ -30,10 +28,8 @@ void local_search_flip(const Problem *prob, Solution *current_sol, int max_check
  * @param current_sol The current solution (will be modified in place)
  * @param max_checks  How many items to check from candidate_list
  * @param mode        LS_FIRST_IMPROVEMENT or LS_BEST_IMPROVEMENT
- * @param start       Start time for time limit
- * @param max_time    Maximum allowed time
  */
-void local_search_swap(const Problem *prob, Solution *current_sol, int max_checks, LSMode mode, clock_t start, float max_time);
+void local_search_swap(const Problem *prob, Solution *current_sol, int max_checks, LSMode mode);
 
 #endif
 

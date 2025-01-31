@@ -50,7 +50,7 @@ void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cu
     }
 }
 
-void local_search_flip(const Problem *prob, Solution *current_sol, const int max_checks, const LSMode mode, const clock_t start, const float max_time) {
+void local_search_flip(const Problem *prob, Solution *current_sol, const int max_checks, const LSMode mode) {
     // Usage of the current solution
     auto current_usage = (float*)malloc(prob->m * sizeof(float));
     if (!current_usage) {
@@ -194,7 +194,7 @@ void local_search_flip(const Problem *prob, Solution *current_sol, const int max
     free(current_usage);
 }
 
-void local_search_swap(const Problem *prob, Solution *current_sol, const int max_checks, const LSMode mode, const clock_t start, const float max_time) {
+void local_search_swap(const Problem *prob, Solution *current_sol, const int max_checks, const LSMode mode) {
     // Compute the usage of the current solution
     auto current_usage = (float*)malloc(prob->m * sizeof(float));
     if (!current_usage) {

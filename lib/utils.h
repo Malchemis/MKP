@@ -12,6 +12,12 @@ typedef enum {
     LS_BEST_IMPROVEMENT
 } LSMode;
 
+typedef enum {
+    NONE,
+    INFO,
+    DEBUG
+} LogLevel;
+
 /**
  * @brief Holds all user-configurable parameters parsed from the command line.
  */
@@ -24,11 +30,11 @@ typedef struct {
     float      max_time;         /**< Maximum allowed time in seconds */
     float      lambda;           /**< Penalty parameter for gradient solver */
     float      learning_rate;    /**< Learning rate for gradient solver */
-    int        max_iters;        /**< Max iterations for gradient solver */
     int        ls_max_checks;    /**< Local search 'k' param (max_checks, etc.) */
     LSMode     ls_mode;          /**< Local search mode (first or best improvement) */
-    int        max_no_improv;    /**< Max no improvement for VND : The number of iterations without improvement before stopping */
-    int        k_max;            /**< Max k for VND : the number of neighborhoods to explore */
+    int        max_no_improv;    /**< Max no improvement for VND/VNS : The number of iterations without improvement before stopping */
+    int        k_max;            /**< Max k for VNS : the number of neighborhoods to explore */
+    LogLevel   log_level;        /**< Verbosity level */
 } Arguments;
 
 /**

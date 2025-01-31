@@ -80,10 +80,9 @@ static void freeze_highest_thetas(const Problem *prob, float *theta, bool *froze
 
 
 void gradient_solver(const Problem *prob, const float lambda, const float learning_rate,
-                     const int max_iters, Solution *out_sol, const clock_t start_time, const float max_time) {
+                     const int max_no_improvement, Solution *out_sol, const LogLevel verbose, const clock_t start, const float max_time) {
     const int n = prob->n;
     const int m = prob->m;
-    const int n_warmup_iters = (int)(0.1f * (float)max_iters);
 
     // 1) Allocate theta, velocity, etc.
     const auto theta   = (float*)malloc(n * sizeof(float));
@@ -104,8 +103,13 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
         theta[i] = (float)rand() / (float)RAND_MAX;
     }
 
+    int no_improvement = 0;
+    int iter = 0;
+    float previous_loss = 1e9f;
+
     // Main loop
-    for (int iter = 0; iter < max_iters; iter++) {
+    while (no_improvement < max_no_improvement && !time_is_up(start, max_time)) {
+        constexpr int n_warmup_iters = 10;
         // Compute x_hat
         for (int i = 0; i < n; i++) {
             if (frozen[i]) {// if frozen, interpret sign to fix it in or out
@@ -149,9 +153,17 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
         // Freeze the highest theta after a few iterations
         if (iter > n_warmup_iters) freeze_highest_thetas(prob, theta, frozen);
 
+        // Compute loss
+        const float L = compute_loss(prob, lambda, x_hat, usage);
+        if (L >= previous_loss) {
+            no_improvement++;
+        } else {
+            no_improvement = 0;
+        }
+        previous_loss = L;
+
         // Print every few iterations
-        if (iter % 5000 == 0) {
-            const float L = compute_loss(prob, lambda, x_hat, usage);
+        if ((verbose == DEBUG) && (iter % 100 == 0)) {
             // approximate objective
             float approx_obj = 0.0f;
             for (int i = 0; i < n; i++) {
@@ -165,6 +177,7 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
             printf("Iter %3d: Loss=%.2f, approx_obj=%.2f, frozen=%d\n",
                    iter, L, approx_obj, count_frozen);
         }
+        iter++;
     }
 
     // 4) Now convert final x_hat to a 0-1 solution in out_sol

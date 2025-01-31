@@ -37,7 +37,7 @@ static void multi_start_gd_vns(const Problem *prob, const Arguments *args,
 
         // Run gradient descent if time remains
         if (!time_is_up(start_time, args->max_time)) {
-            gradient_solver(prob, args->lambda, args->learning_rate, args->max_iters, &candidate, start_time, args->max_time);
+            gradient_solver(prob, args->lambda, args->learning_rate, args->max_no_improv, &candidate, DEBUG, start_time, args->max_time);
         }
 
         // Run VNS if time remains
@@ -103,15 +103,15 @@ int main(const int argc, char *argv[]) {
     else if (strcmp(args.method, "LS-FLIP") == 0) {
         // Construct an initial solution
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
-        local_search_flip(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT, start, args.max_time);
+        local_search_flip(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT);
     }
     else if (strcmp(args.method, "LS-SWAP") == 0) {
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
-        local_search_swap(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT, start, args.max_time);
+        local_search_swap(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT);
     }
     else if (strcmp(args.method, "GD") == 0) {
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
-        gradient_solver(&prob, args.lambda, args.learning_rate, args.max_iters, &sol, start, args.max_time);
+        gradient_solver(&prob, args.lambda, args.learning_rate, args.max_no_improv, &sol, args.log_level, start, args.max_time);
     }
     else if (strcmp(args.method, "VNS") == 0) {
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
@@ -119,12 +119,12 @@ int main(const int argc, char *argv[]) {
     }
     else if (strcmp(args.method, "VND") == 0) {
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
-        vnd(&prob, &sol, args.max_no_improv, args.k_max, args.ls_max_checks, LS_BEST_IMPROVEMENT, start, args.max_time);
+        vnd(&prob, &sol, args.max_no_improv, args.ls_max_checks, LS_BEST_IMPROVEMENT, start, args.max_time);
     }
     else {
         fprintf(stderr, "Unknown method %s. Using LS-FLIP.\n", args.method);
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
-        local_search_flip(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT, start, args.max_time);
+        local_search_flip(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT);
     }
 
     // Measure elapsed time

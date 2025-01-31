@@ -24,11 +24,11 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
     args.max_time        = 60.0f;   // 1 minute default
     args.lambda          = 1e-2f;
     args.learning_rate   = 1e-2f;
-    args.max_iters       = 1000;
     args.ls_max_checks   = 500;
     args.ls_mode         = LS_BEST_IMPROVEMENT;
     args.max_no_improv   = 100;
-    args.k_max           = 500;
+    args.k_max           = 100;
+    args.log_level       = INFO;
 
     if (argc < 2) {
         fprintf(stderr,
@@ -39,11 +39,11 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
             "[--num_starts=N] "
             "[--lambda=L] "
             "[--lr=LR] "
-            "[--max_iters=MI] "
             "[--ls_max_checks=K] "
             "[--max_no_improv=NI] "
             "[--max_no_improv=NI] "
-            "[--k_max=KM]\n",
+            "[--k_max=KM] "
+            "[--verbose=NONE|INFO|DEBUG]\n",
             argv[0]
         );
         exit(EXIT_FAILURE);
@@ -68,8 +68,6 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
             args.lambda = atof(argv[i] + 9);
         } else if (strncmp(argv[i], "--lr=", 5) == 0) {
             args.learning_rate = atof(argv[i] + 5);
-        } else if (strncmp(argv[i], "--max_iters=", 11) == 0) {
-            args.max_iters = atoi(argv[i] + 11);
         } else if (strncmp(argv[i], "--ls_max_checks=", 6) == 0) {
             args.ls_max_checks = atoi(argv[i] + 6);
         } else if (strncmp(argv[i], "--ls_mode=", 10) == 0) {
@@ -78,6 +76,14 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
             args.max_no_improv = atoi(argv[i] + 9);
         } else if (strncmp(argv[i], "--k_max=", 8) == 0) {
             args.k_max = atoi(argv[i] + 8);
+        } else if (strncmp(argv[i], "--verbose=", 10) == 0) {
+            if (strcmp(argv[i] + 10, "NONE") == 0) {
+                args.log_level = NONE;
+            } else if (strcmp(argv[i] + 10, "INFO") == 0) {
+                args.log_level = INFO;
+            } else if (strcmp(argv[i] + 10, "DEBUG") == 0) {
+                args.log_level = DEBUG;
+            }
         }
     }
     return args;

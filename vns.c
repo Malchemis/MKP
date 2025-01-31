@@ -30,7 +30,7 @@ void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const
             shake(prob, sol, &candidate_sol, k);
 
             // Search for a better solution
-            vnd(prob, &candidate_sol, 5, ls_k, ls_mode);
+            vnd(prob, &candidate_sol, 5, ls_k, ls_mode, start, max_time);
 
             // Update best solution
             if (candidate_sol.value > sol->value) {
