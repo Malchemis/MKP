@@ -10,6 +10,8 @@
  * @param sol The solution to improve.
  * @param eval_func Evaluation function (CPU/GPU).
  */
-void vns(const Problem *prob, Solution *sol, void (*eval_func)(const Problem*, Solution*));
+void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const int k_max, const int ls_k, const LSMode ls_mode);
+
+void shake(const Problem *p, const Solution *s, Solution *candidate, const int k);
 
 #endif

@@ -43,6 +43,9 @@ int main(const int argc, char *argv[]) {
     // Keep track of time
     const clock_t start = clock();
 
+    // Seed random number generator
+    srand(42);
+
     // Construct initial solution
     Solution sol;
     allocate_solution(&sol, prob.n);
@@ -66,7 +69,7 @@ int main(const int argc, char *argv[]) {
         vnd(&prob, &sol, 100, 500, k, mode);
     } else if (strcmp(method, "VNS") == 0) {
         printf("Using VNS method.\n");
-        vns(&prob, &sol, eval_func);
+        vns(&prob, &sol, 20, 500, k, mode);
     } else {
         fprintf(stderr, "Unknown method %s. Using LS.\n", method);
         local_search_flip(&prob, &sol, k, mode);

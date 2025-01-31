@@ -13,6 +13,6 @@
  * @param ls_mode The local search mode (first or best improvement).
  * @param ls_k The number of items to consider in local search.
  */
-void vnd(const Problem *prob, Solution *sol, const int max_iter, const int k_max, const int ls_k, const LSMode ls_mode);
+void vnd(const Problem *prob, Solution *sol, const int max_no_improvement, const int k_max, const int ls_k, const LSMode ls_mode);
 
 #endif
