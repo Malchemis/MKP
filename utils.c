@@ -41,7 +41,6 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
             "[--lr=LR] "
             "[--ls_max_checks=K] "
             "[--max_no_improv=NI] "
-            "[--max_no_improv=NI] "
             "[--k_max=KM] "
             "[--verbose=NONE|INFO|DEBUG]\n",
             argv[0]
@@ -60,20 +59,20 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
             args.method = argv[i] + 9;
         } else if (strncmp(argv[i], "--output=", 9) == 0) {
             args.out_file = argv[i] + 9;
-        } else if (strncmp(argv[i], "--max_time=", 10) == 0) {
-            args.max_time = atof(argv[i] + 10);
+        } else if (strncmp(argv[i], "--max_time=", 11) == 0) {
+            args.max_time = atof(argv[i] + 11);
         } else if (strncmp(argv[i], "--num_starts=", 13) == 0) {
             args.num_starts = atoi(argv[i] + 13);
         } else if (strncmp(argv[i], "--lambda=", 9) == 0) {
             args.lambda = atof(argv[i] + 9);
         } else if (strncmp(argv[i], "--lr=", 5) == 0) {
             args.learning_rate = atof(argv[i] + 5);
-        } else if (strncmp(argv[i], "--ls_max_checks=", 6) == 0) {
-            args.ls_max_checks = atoi(argv[i] + 6);
+        } else if (strncmp(argv[i], "--ls_max_checks=", 16) == 0) {
+            args.ls_max_checks = atoi(argv[i] + 16);
         } else if (strncmp(argv[i], "--ls_mode=", 10) == 0) {
             args.ls_mode = (strcmp(argv[i] + 10, "first") == 0) ? LS_FIRST_IMPROVEMENT : LS_BEST_IMPROVEMENT;
-        } else if (strncmp(argv[i], "--max_no_improv=", 9) == 0) {
-            args.max_no_improv = atoi(argv[i] + 9);
+        } else if (strncmp(argv[i], "--max_no_improv=", 16) == 0) {
+            args.max_no_improv = atoi(argv[i] + 16);
         } else if (strncmp(argv[i], "--k_max=", 8) == 0) {
             args.k_max = atoi(argv[i] + 8);
         } else if (strncmp(argv[i], "--verbose=", 10) == 0) {
