@@ -42,6 +42,7 @@ int main(const int argc, char *argv[]) {
     void (*eval_func)(const Problem*, Solution*) = use_gpu ? evaluate_solution_gpu : evaluate_solution_cpu;
 
     // We seed the random number generator for reproducibility
+    //srand(time(nullptr));
     srand(42);
 
     // Keep track of time
@@ -57,23 +58,23 @@ int main(const int argc, char *argv[]) {
     printf("Value: %.2f\n", sol.value);
     printf("Feasible: %s\n\n", sol.feasible ? "Yes" : "No");
 
-    constexpr int k = 500;
+    constexpr int ls_checks = 500;
     constexpr LSMode mode = LS_BEST_IMPROVEMENT;
     // constexpr LSMode mode = LS_FIRST_IMPROVEMENT;
 
     // Apply method
     if (strcmp(method, "LS-FLIP") == 0){
         printf("Using Local Search (Flip) method.\n");
-        local_search_flip(&prob, &sol, k, mode);
+        local_search_flip(&prob, &sol, ls_checks, mode);
     } else if (strcmp(method, "LS-SWAP") == 0) {
         printf("Using Local Search (Flip) method.\n");
-        local_search_swap(&prob, &sol, k, mode);
+        local_search_swap(&prob, &sol, ls_checks, mode);
     } else if (strcmp(method, "VND") == 0) {
         printf("Using VND method.\n");
-        vnd(&prob, &sol, 100, 500, k, mode);
+        vnd(&prob, &sol, 100, ls_checks, mode);
     } else if (strcmp(method, "VNS") == 0) {
         printf("Using VNS method.\n");
-        vns(&prob, &sol, 30, 500, k, mode);
+        vns(&prob, &sol, 100, 100, ls_checks, mode);
     } else if (strcmp(method, "GD") == 0) {
         constexpr int max_iters = 600;
         constexpr float learning_rate = 5e-3f;
@@ -83,7 +84,7 @@ int main(const int argc, char *argv[]) {
     }
     else {
         fprintf(stderr, "Unknown method %s. Using LS.\n", method);
-        local_search_flip(&prob, &sol, k, mode);
+        local_search_flip(&prob, &sol, ls_checks, mode);
     }
 
     const clock_t end = clock();

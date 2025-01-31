@@ -1,48 +1,44 @@
 #include "lib/vnd.h"
 #include <local_search.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <utils.h>
 
-void vnd(const Problem *prob, Solution *sol, const int max_no_improvement, const int k_max, const int ls_k, const LSMode ls_mode) {
-    int iter = 0;
-    int k = 0;
+void vnd(const Problem *prob, Solution *sol, int max_no_improvement, int ls_k, LSMode ls_mode) {
     int no_improvement = 0;
+    bool improved;
 
+    // Allocate candidate solution once
     Solution candidate_sol;
     allocate_solution(&candidate_sol, prob->n);
-    copy_solution(sol, &candidate_sol);
 
+    // Repeat until we reach the maximum allowed iterations without improvement
     while (no_improvement < max_no_improvement) {
-        k = 0;
-        bool improved = false;
+        improved = false;
 
-        while (k < k_max && k < prob->n) {
-            // Reset candidate solution
-            memcpy(candidate_sol.x, sol->x, prob->n * sizeof(float));
-            candidate_sol.value = sol->value;
+        // Flip first
+        copy_solution(sol, &candidate_sol);
+        local_search_flip(prob, &candidate_sol, ls_k, ls_mode);
 
-            // Search for a better solution
-            local_search_flip(prob, &candidate_sol, ls_k, ls_mode);
+        if (candidate_sol.value > sol->value) {
+            copy_solution(&candidate_sol, sol);
+            improved = true;
+        }
+        else {
+            // Swap
+            copy_solution(sol, &candidate_sol);
             local_search_swap(prob, &candidate_sol, ls_k, ls_mode);
-
-            // Update best solution
             if (candidate_sol.value > sol->value) {
                 copy_solution(&candidate_sol, sol);
                 improved = true;
-                k = 0;
-            }
-            else {
-                k++;
             }
         }
+
+        // Track consecutive iterations with no improvement
         if (improved) {
             no_improvement = 0;
         } else {
             no_improvement++;
         }
-        iter++;
     }
+
+    // Free candidate solution after finishing
     free_solution(&candidate_sol);
 }

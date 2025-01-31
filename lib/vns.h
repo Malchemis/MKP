@@ -9,7 +9,6 @@
  * @param prob The problem instance.
  * @param sol The solution to improve.
  * @param max_no_improvement Maximum number of iterations without improvement before stopping.
- * @param k_max Maximum number of neighborhoods to try.
  * @param ls_k Number of items to consider in local search.
  * @param ls_mode The local search mode (first or best improvement).
  */
