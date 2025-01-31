@@ -53,6 +53,9 @@ static void multi_start_gd_vns(const Problem *prob, const Arguments *args,
         if ((candidate.feasible && !best_sol->feasible) ||
             (candidate.feasible == best_sol->feasible && candidate.value > best_sol->value)) {
             copy_solution(&candidate, best_sol);
+            if (args->log_level >= INFO) {
+                printf("New best solution: %.2f\n", best_sol->value);
+            }
         }
     }
 
