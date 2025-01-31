@@ -11,7 +11,7 @@ add_executable(mkp_solver
         local_search.c
         vnd.c
         vns.c
-        ml_solver.c
+        gradesc.c
 )
 
 target_link_libraries(mkp_solver m)

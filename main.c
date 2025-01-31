@@ -3,12 +3,12 @@
 #include <string.h>
 #include <time.h>
 
-#include "lib/data_structure.h"
-#include "lib/utils.h"
-#include "lib/local_search.h"
-#include "lib/vnd.h"
-#include "lib/vns.h"
-#include "lib/ml_solver.h"
+#include <data_structure.h>
+#include <utils.h>
+#include <local_search.h>
+#include <vnd.h>
+#include <vns.h>
+#include <gradesc.h>
 
 /**
  * @brief Main entry point.
@@ -41,6 +41,9 @@ int main(const int argc, char *argv[]) {
     // Choose evaluation function
     void (*eval_func)(const Problem*, Solution*) = use_gpu ? evaluate_solution_gpu : evaluate_solution_cpu;
 
+    // We seed the random number generator for reproducibility
+    srand(42);
+
     // Keep track of time
     const clock_t start = clock();
 
@@ -51,7 +54,7 @@ int main(const int argc, char *argv[]) {
 
     printf("--- MKP Solver ---\n");
     printf("Initial Solution:\n");
-    printf("Value: %f\n", sol.value);
+    printf("Value: %.2f\n", sol.value);
     printf("Feasible: %s\n\n", sol.feasible ? "Yes" : "No");
 
     constexpr int k = 500;
@@ -71,9 +74,9 @@ int main(const int argc, char *argv[]) {
         printf("Using VNS method.\n");
         vns(&prob, &sol, eval_func);
     } else if (strcmp(method, "GD") == 0) {
-        constexpr int max_iters = 1;
-        constexpr float learning_rate = 1e-3f;
-        constexpr float lambda = 1e-5f;
+        constexpr int max_iters = 10;
+        constexpr float learning_rate = 1e-2f;
+        constexpr float lambda = 1e-2f;
         printf("Using Gradient Descent method.\n");
         gradient_solver(&prob, lambda, learning_rate, max_iters, &sol);
     }
@@ -86,7 +89,7 @@ int main(const int argc, char *argv[]) {
     const double cpu_time_used = (double)(end - start) / CLOCKS_PER_SEC;
 
     printf("\nFinal Solution:\n");
-    printf("Value: %f\n", sol.value);
+    printf("Value: %.2f\n", sol.value);
     printf("Feasible: %s\n", sol.feasible ? "Yes" : "No");
     printf("Time: %f seconds\n", cpu_time_used);
 

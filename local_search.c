@@ -2,6 +2,7 @@
 #include "lib/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cur_value) {
     // We can remove up to n items
@@ -49,8 +50,8 @@ void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cu
     }
 }
 
-void local_search_flip(const Problem *prob, Solution *current_sol, const int k, const LSMode mode) {
-    // usage of the current solution
+void local_search_flip(const Problem *prob, Solution *current_sol, const int max_checks, const LSMode mode) {
+    // Usage of the current solution
     auto current_usage = (float*)malloc(prob->m * sizeof(float));
     if (!current_usage) {
         fprintf(stderr, "Memory allocation error in local_search.\n");
@@ -81,24 +82,18 @@ void local_search_flip(const Problem *prob, Solution *current_sol, const int k, 
         exit(EXIT_FAILURE);
     }
 
+    // Only explore top-max_checks items from candidate_list
+    const int limit = (max_checks <= prob->n) ? max_checks : prob->n;
     while (improved) {
         improved = false;
 
         // Copy "current" -> "candidate"
-        for (int j = 0; j < prob->n; j++) {
-            candidate_sol.x[j] = current_sol->x[j];
-        }
-        for (int i = 0; i < prob->m; i++) {
-            candidate_usage[i] = current_usage[i];
-        }
+        copy_solution(current_sol, &candidate_sol);
+        memcpy(candidate_usage, current_usage, prob->m * sizeof(float));
         const auto candidate_value = current_value;
 
         int   best_item = -1;
         float best_value_increase = 0.0f;
-
-        // Only explore top-k items from candidate_list
-        const int limit = (k <= prob->n) ? k : prob->n;
-
         for (int idx = 0; idx < limit; idx++) {
             const int j = (int)prob->candidate_list[idx];
             // Skip items already in the solution (we only do 0 -> 1)
@@ -136,7 +131,7 @@ void local_search_flip(const Problem *prob, Solution *current_sol, const int k, 
         candidate_sol.x[best_item] = 1.0f;
         float new_candidate_value = candidate_value + prob->c[best_item];
 
-        // Update usage
+        // Update usage : add weights of the new item. Improvement means it cannot be an already used item, or an unused.
         for (int i = 0; i < prob->m; i++) {
             const float w_j = prob->weights[i * prob->n + best_item];
             candidate_usage[i] += w_j;
@@ -156,7 +151,7 @@ void local_search_flip(const Problem *prob, Solution *current_sol, const int k, 
 
         // Revert if not strictly better
         if (new_candidate_value <= candidate_value) {
-            // do nothing => revert
+            // do nothing (don't apply candidate to current) => revert
         } else {
             // Accept => update current solution
             improved = true;
