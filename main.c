@@ -37,7 +37,7 @@ static void multi_start_gd_vns(const Problem *prob, const Arguments *args,
 
         // Run gradient descent if time remains
         if (!time_is_up(start_time, args->max_time)) {
-            gradient_solver(prob, args->lambda, args->learning_rate, args->max_no_improv, &candidate, DEBUG, start_time, args->max_time);
+            gradient_solver(prob, args->lambda, args->learning_rate, args->max_no_improv, &candidate, args->log_level, start_time, args->max_time);
         }
 
         // Run VNS if time remains
@@ -95,6 +95,8 @@ int main(const int argc, char *argv[]) {
     printf("Instance: %s\n", args.instance_file);
     printf("Method:   %s\n", args.method);
     printf("Max Time: %.2f sec\n", args.max_time);
+
+    printf(args.log_level == DEBUG ? "Verbose:  DEBUG\n" : "Verbose:  INFO\n");
 
     // Decide which approach to run
     if (strcmp(args.method, "MULTI-GD-VNS") == 0) {

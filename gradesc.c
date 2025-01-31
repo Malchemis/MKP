@@ -81,6 +81,7 @@ static void freeze_highest_thetas(const Problem *prob, float *theta, bool *froze
 
 void gradient_solver(const Problem *prob, const float lambda, const float learning_rate,
                      const int max_no_improvement, Solution *out_sol, const LogLevel verbose, const clock_t start, const float max_time) {
+    printf(verbose == DEBUG ? "Verbose:  DEBUG\n" : "Verbose:  INFO\n");
     const int n = prob->n;
     const int m = prob->m;
 
@@ -163,7 +164,7 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
         previous_loss = L;
 
         // Print every few iterations
-        if ((verbose == DEBUG) && (iter % 100 == 0)) {
+        if (verbose == DEBUG && (iter % 100 == 0)) {
             // approximate objective
             float approx_obj = 0.0f;
             for (int i = 0; i < n; i++) {
@@ -193,10 +194,11 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
     // Evaluate objective and feasibility
     evaluate_solution_cpu(prob, out_sol);
     out_sol->feasible = check_feasibility(prob, out_sol);
-
-    printf("\n--- After Gradient Descent Rounding ---\n");
-    printf("Value: %.2f\n", out_sol->value);
-    printf("Feasible: %s\n\n", out_sol->feasible ? "Yes" : "No");
+    if (verbose == DEBUG) {
+        printf("\n--- After Gradient Descent ---\n");
+        printf("Value: %.2f\n", out_sol->value);
+        printf("Feasible: %s\n", out_sol->feasible ? "Yes" : "No");
+    }
 
     // 5) Repair if infeasible
     if (!out_sol->feasible) {
@@ -204,10 +206,11 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
         // Re-evaluate after repair
         evaluate_solution_cpu(prob, out_sol);
         out_sol->feasible = check_feasibility(prob, out_sol);
-
-        printf("--- After Repair ---\n");
-        printf("Value: %.2f\n", out_sol->value);
-        printf("Feasible: %s\n", out_sol->feasible ? "Yes" : "No");
+        if (verbose == DEBUG) {
+            printf("--- After Repair ---\n");
+            printf("Value: %.2f\n", out_sol->value);
+            printf("Feasible: %s\n", out_sol->feasible ? "Yes" : "No");
+        }
     }
 
     // Cleanup
