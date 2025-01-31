@@ -16,5 +16,19 @@
  */
 void local_search_flip(const Problem *prob, Solution *current_sol, int max_checks, LSMode mode);
 
+
+/**
+ * @brief Local Search (Swap) neighborhood:
+ *
+ * Tries swapping one item in the solution (1) with one item not in the solution (0).
+ * If the swap leads to a higher profit (and can be repaired if infeasible), we accept it and repeat.
+ *
+ * @param prob        The MKP problem instance
+ * @param current_sol The current solution (will be modified in place)
+ * @param max_checks  How many items to check from candidate_list
+ * @param mode        LS_FIRST_IMPROVEMENT or LS_BEST_IMPROVEMENT
+ */
+void local_search_swap(const Problem *prob, Solution *current_sol, const int max_checks, const LSMode mode);
+
 #endif
 

@@ -62,9 +62,12 @@ int main(const int argc, char *argv[]) {
     // constexpr LSMode mode = LS_FIRST_IMPROVEMENT;
 
     // Apply method
-    if (strcmp(method, "LS") == 0) {
+    if (strcmp(method, "LS-FLIP") == 0){
         printf("Using Local Search (Flip) method.\n");
         local_search_flip(&prob, &sol, k, mode);
+    } else if (strcmp(method, "LS-SWAP") == 0) {
+        printf("Using Local Search (Flip) method.\n");
+        local_search_swap(&prob, &sol, k, mode);
     } else if (strcmp(method, "VND") == 0) {
         printf("Using VND method.\n");
         vnd(&prob, &sol, 100, 500, k, mode);

@@ -25,6 +25,7 @@ void vnd(const Problem *prob, Solution *sol, const int max_no_improvement, const
 
             // Search for a better solution
             local_search_flip(prob, &candidate_sol, ls_k, ls_mode);
+            local_search_swap(prob, &candidate_sol, ls_k, ls_mode);
 
             // Update best solution
             if (candidate_sol.value > sol->value) {
