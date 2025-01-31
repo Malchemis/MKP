@@ -1,5 +1,4 @@
 #include <gradesc.h>
-#include <local_search.h>       // for local_search_flip and repair
 #include <data_structure.h>
 #include <utils.h>              // for evaluate_solution_cpu, etc.
 #include <math.h>               // for expf
@@ -84,6 +83,7 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
                      const int max_iters, Solution *out_sol){
     const int n = prob->n;
     const int m = prob->m;
+    const int n_warmup_iters = (int)(0.1f * (float)max_iters);
 
     // 1) Allocate theta, velocity, etc.
     const auto theta   = (float*)malloc(n * sizeof(float));
@@ -101,12 +101,11 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
 
     // 2) Randomly initialize theta
     for (int i = 0; i < n; i++) {
-        theta[i] = 0.01f * (float)rand() / (float)RAND_MAX;
+        theta[i] = (float)rand() / (float)RAND_MAX;
     }
 
     // Main loop
     for (int iter = 0; iter < max_iters; iter++) {
-        constexpr int n_warmup_iters_ratio = 0.1;
         // Compute x_hat
         for (int i = 0; i < n; i++) {
             if (frozen[i]) {// if frozen, interpret sign to fix it in or out
@@ -141,14 +140,14 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
         // Momentum update
         for (int i = 0; i < n; i++) {
             if (!frozen[i]) {
-                constexpr float momentum = 0.9f;
+                constexpr float momentum = 0.95f;
                 v[i] = momentum * v[i] + (1.0f - momentum) * grad[i];
                 theta[i] -= learning_rate * v[i];
             }
         }
 
         // Freeze the highest theta after a few iterations
-        if (iter > n_warmup_iters_ratio * max_iters) freeze_highest_thetas(prob, theta, frozen);
+        if (iter > n_warmup_iters) freeze_highest_thetas(prob, theta, frozen);
 
         // Print every few iterations
         if (iter % 50 == 0) {
@@ -195,7 +194,7 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
 
         printf("--- After Repair ---\n");
         printf("Value: %.2f\n", out_sol->value);
-        printf("Feasible: %s\n\n", out_sol->feasible ? "Yes" : "No");
+        printf("Feasible: %s\n", out_sol->feasible ? "Yes" : "No");
     }
 
     // Cleanup
