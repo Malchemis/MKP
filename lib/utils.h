@@ -60,11 +60,19 @@ bool check_feasibility(const Problem *prob, const Solution *sol);
  */
 void save_solution(const char *filename, const Solution *sol);
 
-#endif
-
 /**
- * @brief Creates a copy of a solution.
- * @param src The source solution.
- * @returns A copy of the source solution.
+ * @brief Repairs the solution if it violates capacity constraints.
+ *
+ * Simple strategy: while any constraint is violated, remove one item (x_j=0)
+ * that yields the smallest "value/cost" ratio (or largest weight per value).
+ *
+ * @param prob       The MKP problem instance
+ * @param sol        The solution (possibly infeasible) to repair
+ * @param usage      Current usage array of length m
+ * @param cur_value  Current objective value (updated in place if items removed)
  */
+void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cur_value);
 
+void compute_usage_from_solution(const Problem *prob, const Solution *sol, float *usage);
+
+#endif

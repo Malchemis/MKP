@@ -1,12 +1,12 @@
 #include <gradesc.h>
-#include <local_search.h>       // for repair
+#include <local_search.h>       // for local_search_flip and repair
 #include <data_structure.h>
 #include <utils.h>              // for evaluate_solution_cpu, etc.
 #include <math.h>               // for expf
 #include <stdlib.h>             // for malloc, free, rand
 #include <stdio.h>              // for fprintf
 
-#define CLAMP_VALUE 100.0f
+#define CLAMP_VALUE 1.0f
 
 /**
  * @brief Simple sigmoid function with clamping to avoid overflow.

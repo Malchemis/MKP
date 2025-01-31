@@ -189,3 +189,22 @@ void save_solution(const char *filename, const Solution *sol) {
 
     fclose(fout);
 }
+
+/**
+ * @brief Computes usage array from a 0-1 solution x (stored in out_sol->x).
+ *
+ * usage[j] = sum_i weights[j*n + i] * out_sol->x[i].
+ *
+ * @param prob   The MKP instance
+ * @param sol    The (binary) solution
+ * @param usage  Array of length m to fill in
+ */
+void compute_usage_from_solution(const Problem *prob, const Solution *sol, float *usage) {
+    for (int j = 0; j < prob->m; j++) {
+        float sum_w = 0.0f;
+        for (int i = 0; i < prob->n; i++) {
+            sum_w += prob->weights[j * prob->n + i] * sol->x[i];
+        }
+        usage[j] = sum_w;
+    }
+}
