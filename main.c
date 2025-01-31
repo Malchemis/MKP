@@ -67,16 +67,16 @@ int main(const int argc, char *argv[]) {
         local_search_flip(&prob, &sol, k, mode);
     } else if (strcmp(method, "VND") == 0) {
         printf("Using VND method.\n");
-        constexpr int max_iters = 1000;
+        constexpr int max_iters = 500;
         const int max_neigh = prob.n;
         vnd(&prob, &sol, max_iters, max_neigh, k, mode);
     } else if (strcmp(method, "VNS") == 0) {
         printf("Using VNS method.\n");
         vns(&prob, &sol, eval_func);
     } else if (strcmp(method, "GD") == 0) {
-        constexpr int max_iters = 10;
-        constexpr float learning_rate = 1e-2f;
-        constexpr float lambda = 1e-2f;
+        constexpr int max_iters = 600;
+        constexpr float learning_rate = 5e-3f;
+        constexpr float lambda = 5e-3f;
         printf("Using Gradient Descent method.\n");
         gradient_solver(&prob, lambda, learning_rate, max_iters, &sol);
     }
