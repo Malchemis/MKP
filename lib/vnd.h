@@ -18,6 +18,6 @@
  * @param start                 The start time for time limit.
  * @param max_time              The maximum allowed time.
  */
-void vnd(const Problem *prob, Solution *sol, int max_no_improvement, int k_max, int ls_k, LSMode ls_mode, clock_t start, float max_time);
+void vnd(const Problem *prob, Solution *sol, const int max_no_improvement, const int ls_k, const LSMode ls_mode);
 
 #endif

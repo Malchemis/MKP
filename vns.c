@@ -6,10 +6,12 @@
 #include "lib/vns.h"
 
 #include <local_search.h>
+#include <stdio.h>
 
 #include <stdlib.h>
 #include <string.h>
 #include <utils.h>
+#include <vnd.h>
 
 void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const int k_max, const int ls_k, const LSMode ls_mode, const clock_t start, const float max_time) {
     int iter = 0;
@@ -23,13 +25,12 @@ void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const
     while (no_improvement < max_no_improvement) {
         k = 0;
         bool improved = false;
-
-        while (k < k_max && k < prob->n) {
+        while (k <= k_max) {
             // Shake
             shake(prob, sol, &candidate_sol, k);
 
             // Search for a better solution
-            local_search_flip(prob, &candidate_sol, ls_k, ls_mode, start, max_time);
+            vnd(prob, &candidate_sol, 5, ls_k, ls_mode);
 
             // Update best solution
             if (candidate_sol.value > sol->value) {
