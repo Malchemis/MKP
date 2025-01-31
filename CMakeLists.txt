@@ -12,8 +12,6 @@ add_executable(mkp_solver
         vnd.c
         vns.c
         gradesc.c
-        genetic.c
-        genetic.h
 )
 
 target_link_libraries(mkp_solver m)

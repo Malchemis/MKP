@@ -34,14 +34,6 @@ typedef struct Individual {
 } Individual;
 
 /**
- * @brief Represents the local search mode.
- */
-typedef enum {
-    LS_FIRST_IMPROVEMENT,
-    LS_BEST_IMPROVEMENT
-} LSMode;
-
-/**
  * @brief Allocates memory for a solution of size n.
  * @param sol The solution structure to allocate.
  * @param n Number of items.

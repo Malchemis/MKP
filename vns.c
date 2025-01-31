@@ -11,7 +11,7 @@
 #include <string.h>
 #include <utils.h>
 
-void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const int k_max, const int ls_k, const LSMode ls_mode) {
+void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const int k_max, const int ls_k, const LSMode ls_mode, const clock_t start, const float max_time) {
     int iter = 0;
     int k = 0;
     int no_improvement = 0;
@@ -29,7 +29,7 @@ void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const
             shake(prob, sol, &candidate_sol, k);
 
             // Search for a better solution
-            local_search_flip(prob, &candidate_sol, ls_k, ls_mode);
+            local_search_flip(prob, &candidate_sol, ls_k, ls_mode, start, max_time);
 
             // Update best solution
             if (candidate_sol.value > sol->value) {

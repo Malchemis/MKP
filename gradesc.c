@@ -80,7 +80,7 @@ static void freeze_highest_thetas(const Problem *prob, float *theta, bool *froze
 
 
 void gradient_solver(const Problem *prob, const float lambda, const float learning_rate,
-                     const int max_iters, Solution *out_sol){
+                     const int max_iters, Solution *out_sol, const clock_t start_time, const float max_time) {
     const int n = prob->n;
     const int m = prob->m;
     const int n_warmup_iters = (int)(0.1f * (float)max_iters);
@@ -150,7 +150,7 @@ void gradient_solver(const Problem *prob, const float lambda, const float learni
         if (iter > n_warmup_iters) freeze_highest_thetas(prob, theta, frozen);
 
         // Print every few iterations
-        if (iter % 50 == 0) {
+        if (iter % 5000 == 0) {
             const float L = compute_loss(prob, lambda, x_hat, usage);
             // approximate objective
             float approx_obj = 0.0f;

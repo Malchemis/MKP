@@ -5,12 +5,89 @@
 // - A saver that writes the solution to a file.
 // - A helper for the solver functions that gives an initial solution to work with.
 //
-#include "lib/utils.h"
+#include <utils.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include <time.h>
+
+
+Arguments parse_cmd_args(const int argc, char *argv[]) {
+    Arguments args;
+    // Defaults
+    args.instance_file   = nullptr;
+    args.out_file        = "solutions/solution.txt";
+    args.method          = "LS-FLIP";
+    args.use_gpu         = 0;
+    args.num_starts      = 5;
+    args.max_time        = 60.0f;   // 1 minute default
+    args.lambda          = 1e-2f;
+    args.learning_rate   = 1e-2f;
+    args.max_iters       = 1000;
+    args.ls_max_checks   = 500;
+    args.ls_mode         = LS_BEST_IMPROVEMENT;
+    args.max_no_improv   = 100;
+    args.k_max           = 500;
+
+    if (argc < 2) {
+        fprintf(stderr,
+            "Usage: %s <instance_file> [--cpu|--gpu] "
+            "[--method=LS-FLIP|LS-SWAP|VND|VNS|GD|MULTI-GD-VNS] "
+            "[--output=solution.txt] "
+            "[--max_time=seconds] "
+            "[--num_starts=N] "
+            "[--lambda=L] "
+            "[--lr=LR] "
+            "[--max_iters=MI] "
+            "[--ls_max_checks=K] "
+            "[--max_no_improv=NI] "
+            "[--max_no_improv=NI] "
+            "[--k_max=KM]\n",
+            argv[0]
+        );
+        exit(EXIT_FAILURE);
+    }
+    args.instance_file = argv[1];
+
+    // parse optional arguments
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i], "--gpu") == 0) {
+            args.use_gpu = 1;
+        } else if (strcmp(argv[i], "--cpu") == 0) {
+            args.use_gpu = 0;
+        } else if (strncmp(argv[i], "--method=", 9) == 0) {
+            args.method = argv[i] + 9;
+        } else if (strncmp(argv[i], "--output=", 9) == 0) {
+            args.out_file = argv[i] + 9;
+        } else if (strncmp(argv[i], "--max_time=", 10) == 0) {
+            args.max_time = atof(argv[i] + 10);
+        } else if (strncmp(argv[i], "--num_starts=", 13) == 0) {
+            args.num_starts = atoi(argv[i] + 13);
+        } else if (strncmp(argv[i], "--lambda=", 9) == 0) {
+            args.lambda = atof(argv[i] + 9);
+        } else if (strncmp(argv[i], "--lr=", 5) == 0) {
+            args.learning_rate = atof(argv[i] + 5);
+        } else if (strncmp(argv[i], "--max_iters=", 11) == 0) {
+            args.max_iters = atoi(argv[i] + 11);
+        } else if (strncmp(argv[i], "--ls_max_checks=", 6) == 0) {
+            args.ls_max_checks = atoi(argv[i] + 6);
+        } else if (strncmp(argv[i], "--ls_mode=", 10) == 0) {
+            args.ls_mode = (strcmp(argv[i] + 10, "first") == 0) ? LS_FIRST_IMPROVEMENT : LS_BEST_IMPROVEMENT;
+        } else if (strncmp(argv[i], "--max_no_improv=", 9) == 0) {
+            args.max_no_improv = atoi(argv[i] + 9);
+        } else if (strncmp(argv[i], "--k_max=", 8) == 0) {
+            args.k_max = atoi(argv[i] + 8);
+        }
+    }
+    return args;
+}
+
+
+int time_is_up(const clock_t start, const float max_time) {
+    const double elapsed = (double)(clock() - start) / CLOCKS_PER_SEC;
+    return (elapsed >= (double)max_time) ? 1 : 0;
+}
 
 /* Internal helper to read arrays in the required format */
 static int read_array(FILE *fin, float *arr, const int count) {
@@ -22,6 +99,7 @@ static int read_array(FILE *fin, float *arr, const int count) {
     }
     return 0;
 }
+
 /* Internal helper to compare ratios in descending order */
 int compare_ratios_descending(const void *a, const void *b) {
     const auto fa = (const float*)a;

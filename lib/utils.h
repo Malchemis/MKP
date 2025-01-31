@@ -1,7 +1,59 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "data_structure.h"
+#include <time.h>
+#include <data_structure.h>
+
+/**
+ * @brief Represents the local search mode.
+ */
+typedef enum {
+    LS_FIRST_IMPROVEMENT,
+    LS_BEST_IMPROVEMENT
+} LSMode;
+
+/**
+ * @brief Holds all user-configurable parameters parsed from the command line.
+ */
+typedef struct {
+    const char *instance_file;   /**< The input instance file path */
+    const char *out_file;        /**< The output solution file path */
+    const char *method;          /**< Which method to run (LS, VND, VNS, GD, etc.) */
+    int        use_gpu;          /**< 1 = GPU, 0 = CPU */
+    int        num_starts;       /**< Number of random starts for multi-start */
+    float      max_time;         /**< Maximum allowed time in seconds */
+    float      lambda;           /**< Penalty parameter for gradient solver */
+    float      learning_rate;    /**< Learning rate for gradient solver */
+    int        max_iters;        /**< Max iterations for gradient solver */
+    int        ls_max_checks;    /**< Local search 'k' param (max_checks, etc.) */
+    LSMode     ls_mode;          /**< Local search mode (first or best improvement) */
+    int        max_no_improv;    /**< Max no improvement for VND : The number of iterations without improvement before stopping */
+    int        k_max;            /**< Max k for VND : the number of neighborhoods to explore */
+} Arguments;
+
+/**
+ * @brief Parses command-line arguments into an Arguments struct.
+ *
+ * Usage example:
+ *   ./mkp_solver instance.txt [--cpu|--gpu]
+ *       [--method=LS-FLIP|LS-SWAP|VND|VNS|GD|MULTI-GD-VNS]
+ *       [--output=solution.txt]
+ *       [--max_time=10.0]
+ *       [--num_starts=5]
+ *       [--lambda=0.01]
+ *       [--lr=1e-3]
+ *       [--max_iters=1000]
+ *       [--ls_max_checks=500]
+ *       [--max_no_improv=100]
+ *       [--k_max=500]
+ */
+Arguments parse_cmd_args(int argc, char *argv[]);
+
+/**
+ * @brief Checks if we exceeded the max_time. Returns 1 if time is up, else 0.
+ */
+int time_is_up(clock_t start, float max_time);
+
 
 /**
  * @brief Parse an MKP instance from a given file.

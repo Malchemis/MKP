@@ -1,7 +1,8 @@
 #ifndef GRADESC_H
 #define GRADESC_H
 
-#include "data_structure.h"
+#include <time.h>
+#include <data_structure.h>
 
 
 /**
@@ -24,12 +25,16 @@
  * @param learning_rate The step size for gradient updates.
  * @param max_iters     Number of gradient descent iterations.
  * @param out_sol       Output solution (allocated by caller).
+ * @param start_time    Start time for time limit.
+ * @param max_time      Maximum allowed time.
  */
 void gradient_solver(const Problem *prob,
                      float lambda,
                      float learning_rate,
                      int max_iters,
-                     Solution *out_sol);
+                     Solution *out_sol,
+                     clock_t start_time,
+                     float max_time);
 
 #endif // GRADESC_H
 
