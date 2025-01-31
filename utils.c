@@ -132,8 +132,6 @@ void construct_initial_solution(const Problem *prob, Solution *sol,
     best.value = -INFINITY;
     best.feasible = false;
 
-    srand((unsigned)time(nullptr));
-
     for (int s = 0; s < num_starts; s++) {
         Solution candidate;
         allocate_solution(&candidate, prob->n);

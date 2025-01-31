@@ -3,11 +3,12 @@
 #include <string.h>
 #include <time.h>
 
-#include "lib/data_structure.h"
-#include "lib/utils.h"
-#include "lib/local_search.h"
-#include "lib/vnd.h"
-#include "lib/vns.h"
+#include <data_structure.h>
+#include <utils.h>
+#include <local_search.h>
+#include <vnd.h>
+#include <vns.h>
+#include <gradesc.h>
 
 /**
  * @brief Main entry point.
@@ -40,11 +41,11 @@ int main(const int argc, char *argv[]) {
     // Choose evaluation function
     void (*eval_func)(const Problem*, Solution*) = use_gpu ? evaluate_solution_gpu : evaluate_solution_cpu;
 
+    // We seed the random number generator for reproducibility
+    srand(42);
+
     // Keep track of time
     const clock_t start = clock();
-
-    // Seed random number generator
-    srand(42);
 
     // Construct initial solution
     Solution sol;
@@ -53,7 +54,7 @@ int main(const int argc, char *argv[]) {
 
     printf("--- MKP Solver ---\n");
     printf("Initial Solution:\n");
-    printf("Value: %f\n", sol.value);
+    printf("Value: %.2f\n", sol.value);
     printf("Feasible: %s\n\n", sol.feasible ? "Yes" : "No");
 
     constexpr int k = 500;
@@ -70,7 +71,14 @@ int main(const int argc, char *argv[]) {
     } else if (strcmp(method, "VNS") == 0) {
         printf("Using VNS method.\n");
         vns(&prob, &sol, 20, 500, k, mode);
-    } else {
+    } else if (strcmp(method, "GD") == 0) {
+        constexpr int max_iters = 10;
+        constexpr float learning_rate = 1e-2f;
+        constexpr float lambda = 1e-2f;
+        printf("Using Gradient Descent method.\n");
+        gradient_solver(&prob, lambda, learning_rate, max_iters, &sol);
+    }
+    else {
         fprintf(stderr, "Unknown method %s. Using LS.\n", method);
         local_search_flip(&prob, &sol, k, mode);
     }
@@ -78,8 +86,8 @@ int main(const int argc, char *argv[]) {
     const clock_t end = clock();
     const double cpu_time_used = (double)(end - start) / CLOCKS_PER_SEC;
 
-    printf("Final Solution:\n");
-    printf("Value: %f\n", sol.value);
+    printf("\nFinal Solution:\n");
+    printf("Value: %.2f\n", sol.value);
     printf("Feasible: %s\n", sol.feasible ? "Yes" : "No");
     printf("Time: %f seconds\n", cpu_time_used);
 

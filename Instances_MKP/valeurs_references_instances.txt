@@ -23,4 +23,4 @@
 500M30_21	301675
 
 Ces valeurs sont données à titre indicatif, pour vous indiquer une valeur "cible".
-Selon les instances il ne s'agit pas forcément de la valeur optimale.
+Selon les instances, il ne s'agit pas forcément de la valeur optimale.
