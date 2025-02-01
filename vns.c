@@ -13,7 +13,16 @@
 #include <utils.h>
 #include <vnd.h>
 
-void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const int k_max, const int ls_k, const LSMode ls_mode, const clock_t start, const float max_time) {
+void vns(const Problem *prob,
+        Solution *sol,
+        const int max_no_improvement,
+        const int k_max,
+        const int ls_k,
+        const LSMode ls_mode,
+        const clock_t start,
+        const float max_time,
+        const LogLevel verbose) {
+
     int iter = 0;
     int k = 0;
     int no_improvement = 0;
@@ -48,6 +57,11 @@ void vns(const Problem *prob, Solution *sol, const int max_no_improvement, const
             no_improvement++;
         }
         iter++;
+
+        // Print progress
+        if (verbose == DEBUG && (iter % 10 == 0)) {
+            printf("[VNS] Iteration %d: best value = %.2f\n", iter, sol->value);
+        }
     }
     free_solution(&candidate_sol);
 }

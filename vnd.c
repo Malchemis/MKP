@@ -1,9 +1,16 @@
 #include "lib/vnd.h"
 #include <local_search.h>
+#include <stdio.h>
 
-void vnd(const Problem *prob, Solution *sol, int max_no_improvement, int ls_k, LSMode ls_mode, const clock_t start, const float max_time) {
+void vnd(const Problem *prob,
+        Solution *sol,
+        const int max_no_improvement,
+        const int ls_k,
+        const LSMode ls_mode,
+        const clock_t start,
+        const float max_time) {
+
     int no_improvement = 0;
-    bool improved;
 
     // Allocate candidate solution once
     Solution candidate_sol;
@@ -11,7 +18,7 @@ void vnd(const Problem *prob, Solution *sol, int max_no_improvement, int ls_k, L
 
     // Repeat until we reach the maximum allowed iterations without improvement
     while (no_improvement < max_no_improvement && !time_is_up(start, max_time)) {
-        improved = false;
+        bool improved = false;
 
         // Flip first
         copy_solution(sol, &candidate_sol);

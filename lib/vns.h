@@ -16,8 +16,17 @@
  * @param ls_mode               The local search mode (first or best improvement).
  * @param start                 The start time for time limit.
  * @param max_time              The maximum allowed time.
+ * @param verbose               Verbosity level.
  */
-void vns(const Problem *prob, Solution *sol, int max_no_improvement, int k_max, int ls_k, LSMode ls_mode, clock_t start, float max_time);
+void vns(const Problem *prob,
+    Solution *sol,
+    int max_no_improvement,
+    int k_max,
+    int ls_k,
+    LSMode ls_mode,
+    clock_t start,
+    float max_time,
+    LogLevel verbose);
 
 void shake(const Problem *p, const Solution *s, Solution *candidate, int k);
 

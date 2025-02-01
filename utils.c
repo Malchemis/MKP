@@ -22,18 +22,25 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
     args.use_gpu         = 0;
     args.num_starts      = 5;
     args.max_time        = 60.0f;   // 1 minute default
+    // Gradient Descent parameters
     args.lambda          = 1e-2f;
     args.learning_rate   = 1e-2f;
+    // Local Search parameters
     args.ls_max_checks   = 500;
     args.ls_mode         = LS_BEST_IMPROVEMENT;
+    // VNS/VND parameters
     args.max_no_improv   = 100;
     args.k_max           = 100;
+    // Genetic Algorithm parameters
+    args.population_size = 1000;
+    args.max_generations = 1000;
+    args.mutation_rate   = 0.01f;
     args.log_level       = INFO;
 
     if (argc < 2) {
         fprintf(stderr,
             "Usage: %s <instance_file> [--cpu|--gpu] "
-            "[--method=LS-FLIP|LS-SWAP|VND|VNS|GD|MULTI-GD-VNS] "
+            "[--method=LS-FLIP|LS-SWAP|VND|VNS|GD|MULTI-GD-VNS|GA] "
             "[--output=solution.txt] "
             "[--max_time=seconds] "
             "[--num_starts=N] "
@@ -42,6 +49,9 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
             "[--ls_max_checks=K] "
             "[--max_no_improv=NI] "
             "[--k_max=KM] "
+            "[--population_size=PS] "
+            "[--max_generations=MG] "
+            "[--mutation_rate=MR] "
             "[--verbose=NONE|INFO|DEBUG]\n",
             argv[0]
         );
@@ -75,6 +85,14 @@ Arguments parse_cmd_args(const int argc, char *argv[]) {
             args.max_no_improv = atoi(argv[i] + 16);
         } else if (strncmp(argv[i], "--k_max=", 8) == 0) {
             args.k_max = atoi(argv[i] + 8);
+        } else if (strncmp(argv[i], "--population_size=", 18) == 0) {
+            args.population_size = atoi(argv[i] + 18);
+            printf("population_size: %d\n", args.population_size);
+        } else if (strncmp(argv[i], "--max_generations=", 18) == 0) {
+            args.max_generations = atoi(argv[i] + 18);
+            printf("max_generations: %d\n", args.max_generations);
+        } else if (strncmp(argv[i], "--mutation_rate=", 16) == 0) {
+            args.mutation_rate = atof(argv[i] + 16);
         } else if (strncmp(argv[i], "--verbose=", 10) == 0) {
             if (strcmp(argv[i] + 10, "NONE") == 0) {
                 args.log_level = NONE;

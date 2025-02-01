@@ -17,7 +17,7 @@ void repair_solution(const Problem *prob, Solution *sol, float *usage, float *cu
         }
         if (feasible) {
             sol->feasible = true;
-            break; // done
+            break;
         }
 
         // Not feasible => remove one "worst" item by ratio

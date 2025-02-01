@@ -34,6 +34,9 @@ typedef struct {
     LSMode     ls_mode;          /**< Local search mode (first or best improvement) */
     int        max_no_improv;    /**< Max no improvement for VND/VNS : The number of iterations without improvement before stopping */
     int        k_max;            /**< Max k for VNS : the number of neighborhoods to explore */
+    int        population_size;  /**< Population size for genetic algorithm */
+    int        max_generations;  /**< Max generations for genetic algorithm */
+    float      mutation_rate;    /**< Mutation rate for genetic algorithm */
     LogLevel   log_level;        /**< Verbosity level */
 } Arguments;
 
@@ -42,7 +45,7 @@ typedef struct {
  *
  * Usage example:
  *   ./mkp_solver instance.txt [--cpu|--gpu]
- *       [--method=LS-FLIP|LS-SWAP|VND|VNS|GD|MULTI-GD-VNS]
+ *       [--method=LS-FLIP|LS-SWAP|VND|VNS|GD|MULTI-GD-VNS|GA]
  *       [--output=solution.txt]
  *       [--max_time=10.0]
  *       [--num_starts=5]
@@ -52,6 +55,10 @@ typedef struct {
  *       [--ls_max_checks=500]
  *       [--max_no_improv=100]
  *       [--k_max=500]
+ *       [--population_size=500]
+ *       [--max_generations=1000]
+ *       [--mutation_rate=0.01]
+ *       [--verbose=NONE|INFO|DEBUG]
  */
 Arguments parse_cmd_args(int argc, char *argv[]);
 

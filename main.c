@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 #include <data_structure.h>
 #include <utils.h>          // parse args, parse_instance, free_problem,...
@@ -9,7 +10,7 @@
 #include <vnd.h>
 #include <vns.h>
 #include <gradesc.h>
-#include <math.h>
+#include <genetic.h>
 
 
 /* Multi-start approach: for each random init, we run GD, then VNS, keep the best solution */
@@ -37,19 +38,33 @@ static void multi_start_gd_vns(const Problem *prob, const Arguments *args,
 
         // Run gradient descent if time remains
         if (!time_is_up(start_time, args->max_time)) {
-            gradient_solver(prob, args->lambda, args->learning_rate, args->max_no_improv, &candidate, args->log_level, start_time, args->max_time);
+            gradient_solver(prob,
+                            args->lambda,
+                            args->learning_rate,
+                            args->max_no_improv,
+                            &candidate,
+                            args->log_level,
+                            start_time, args->max_time);
         }
 
         // Run VNS if time remains
         if (!time_is_up(start_time, args->max_time)) {
-            vns(prob, &candidate, args->max_no_improv, args->k_max, args->ls_max_checks, LS_BEST_IMPROVEMENT, start_time, args->max_time);
+            vns(prob,
+                &candidate,
+                args->max_no_improv,
+                args->k_max,
+                args->ls_max_checks,
+                LS_BEST_IMPROVEMENT,
+                start_time,
+                args->max_time,
+                args->log_level);
         }
 
         // Evaluate or re-check feasibility if needed
         eval_func(prob, &candidate);
         candidate.feasible = check_feasibility(prob, &candidate);
 
-        // 4) Compare with best
+        // Compare with best
         if ((candidate.feasible && !best_sol->feasible) ||
             (candidate.feasible == best_sol->feasible && candidate.value > best_sol->value)) {
             copy_solution(&candidate, best_sol);
@@ -61,8 +76,6 @@ static void multi_start_gd_vns(const Problem *prob, const Arguments *args,
 
     free_solution(&candidate);
 }
-
-
 
 /**
  * @brief Main entry point
@@ -98,31 +111,88 @@ int main(const int argc, char *argv[]) {
     printf("Instance: %s\n", args.instance_file);
     printf("Method:   %s\n", args.method);
     printf("Max Time: %.2f sec\n", args.max_time);
+    printf("Verbosity: %s\n", args.log_level == NONE ? "NONE" : args.log_level == INFO ? "INFO" : "DEBUG");
 
     // Decide which approach to run
     if (strcmp(args.method, "MULTI-GD-VNS") == 0) {
+        printf("\nStarting Multi-start GD-VNS with these parameters:\n");
+        printf("Num starts: %d\n", args.num_starts);
+        printf("Lambda: %f\n", args.lambda);
+        printf("Learning rate: %f\n", args.learning_rate);
+        printf("Max no improvement: %d\n", args.max_no_improv);
+        printf("K max: %d\n", args.k_max);
+        printf("LS k: %d\n", args.ls_max_checks);
+        printf("LS mode: %s\n", args.ls_mode == LS_FIRST_IMPROVEMENT ? "First" : "Best");
         multi_start_gd_vns(&prob, &args, eval_func, &sol);
     }
     else if (strcmp(args.method, "LS-FLIP") == 0) {
-        // Construct an initial solution
+        printf("\nStarting LS-FLIP with these parameters:\n");
+        printf("LS max checks: %d\n", args.ls_max_checks);
+        printf("Num starts: %d\n", args.num_starts);
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
         local_search_flip(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT);
     }
     else if (strcmp(args.method, "LS-SWAP") == 0) {
+        printf("\nStarting LS-SWAP with these parameters:\n");
+        printf("LS max checks: %d\n", args.ls_max_checks);
+        printf("Num starts: %d\n", args.num_starts);
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
         local_search_swap(&prob, &sol, args.ls_max_checks, LS_BEST_IMPROVEMENT);
     }
     else if (strcmp(args.method, "GD") == 0) {
+        printf("\nStarting Gradient descent with these parameters:\n");
+        printf("Lambda: %f\n", args.lambda);
+        printf("Learning rate: %f\n", args.learning_rate);
+        printf("Max no improvement: %d\n", args.max_no_improv);
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
-        gradient_solver(&prob, args.lambda, args.learning_rate, args.max_no_improv, &sol, args.log_level, start, args.max_time);
+        gradient_solver(&prob,
+            args.lambda,
+            args.learning_rate,
+            args.max_no_improv,
+            &sol,
+            args.log_level,
+            start,
+            args.max_time);
     }
     else if (strcmp(args.method, "VNS") == 0) {
+        printf("\nStarting Variable Neighborhood Search with these parameters:\n");
+        printf("Max no improvement: %d\n", args.max_no_improv);
+        printf("K max: %d\n", args.k_max);
+        printf("LS k: %d\n", args.ls_max_checks);
+        printf("LS mode: %s\n", args.ls_mode == LS_FIRST_IMPROVEMENT ? "First" : "Best");
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
-        vns(&prob, &sol, args.max_no_improv, args.k_max, args.ls_max_checks, LS_BEST_IMPROVEMENT, start, args.max_time);
+        vns(&prob,
+            &sol,
+            args.max_no_improv,
+            args.k_max,
+            args.ls_max_checks,
+            LS_BEST_IMPROVEMENT,
+            start,
+            args.max_time,
+            args.log_level);
     }
     else if (strcmp(args.method, "VND") == 0) {
+        printf("\nStarting Variable Neighborhood Descent with these parameters:\n");
+        printf("Max no improvement: %d\n", args.max_no_improv);
+        printf("LS k: %d\n", args.ls_max_checks);
+        printf("LS mode: %s\n", args.ls_mode == LS_FIRST_IMPROVEMENT ? "First" : "Best");
         construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
         vnd(&prob, &sol, args.max_no_improv, args.ls_max_checks, LS_BEST_IMPROVEMENT, start, args.max_time);
+    }
+    else if (strcmp(args.method, "GA") == 0) {
+        printf("\nStarting Genetic Algorithm with these parameters:\n");
+        printf("Population size: %d\n", args.population_size);
+        printf("Max generations: %d\n", args.max_generations);
+        printf("Mutation rate: %.2f\n", args.mutation_rate);
+        construct_initial_solution(&prob, &sol, eval_func, args.num_starts);
+        genetic_algorithm(&prob,
+            &sol,
+            args.population_size,
+            args.max_generations,
+            args.mutation_rate,
+            start,
+            args.max_time,
+            args.log_level);
     }
     else {
         fprintf(stderr, "Unknown method %s. Using LS-FLIP.\n", args.method);

@@ -28,6 +28,11 @@ typedef struct {
     bool feasible; /**< Whether this solution is feasible or not */
 } Solution;
 
+/**
+ * @brief Represents an individual in the genetic algorithm.
+ *
+ * The fitness is computed as the value of the solution minus a penalty if infeasible.
+ */
 typedef struct Individual {
     Solution sol;
     float fitness;
