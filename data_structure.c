@@ -53,7 +53,7 @@ void copy_solution(const Solution *src, Solution *dst) {
         }
         memcpy(dst->x, src->x, src->n * sizeof(float));
     } else {
-        dst->x = NULL;
+        dst->x = nullptr;
     }
 }
 

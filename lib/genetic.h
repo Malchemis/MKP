@@ -74,10 +74,7 @@ void ga_tournament_selection(const Individual *population,
  * @param p2    Parent 2
  * @param child Output: child
  */
-void ga_single_point_crossover(const Problem *prob,
-                                      const Individual *p1,
-                                      const Individual *p2,
-                                      const Individual *child);
+void ga_single_point_crossover(const Problem *prob, const Individual *p1, const Individual *p2, Individual *child);
 
 /**
  * @brief Bit-flip mutation.
@@ -86,9 +83,7 @@ void ga_single_point_crossover(const Problem *prob,
  * @param ind           The individual to mutate.
  * @param mutation_rate Probability of flipping each bit.
  */
-void ga_mutation(const Problem *prob,
-                        const Individual *ind,
-                        float mutation_rate);
+void ga_mutation(const Problem *prob, Individual *ind, float mutation_rate);
 
 /**
  * @brief Computes a penalty for a solution based on constraint violations.
@@ -124,7 +119,6 @@ void ga_swap_individuals(Individual *i1, Individual *i2);
 /**
  * @brief Compare two Individuals by fitness (ascending order).
  */
-int cmp_individual_ptrs_desc(const void *a, const void *b);
-
+static int cmp_individual_ptrs_desc(const void *a, const void *b);
 
 #endif // GENETIC_H

@@ -105,7 +105,7 @@ void gradient_solver(const Problem *prob,
         exit(EXIT_FAILURE);
     }
 
-    // 2) Randomly initialize theta
+    // Randomly initialize theta
     for (int i = 0; i < n; i++) {
         theta[i] = (float)rand() / (float)RAND_MAX;
     }
@@ -187,7 +187,7 @@ void gradient_solver(const Problem *prob,
         iter++;
     }
 
-    // 4) Now convert final x_hat to a 0-1 solution in out_sol
+    // Now convert final x_hat to a 0-1 solution in out_sol
     for (int i = 0; i < n; i++) {
         constexpr float cutoff = 0.5f;
         const float val = sigmoid(theta[i]);
@@ -206,7 +206,7 @@ void gradient_solver(const Problem *prob,
         printf("Feasible: %s\n", out_sol->feasible ? "Yes" : "No");
     }
 
-    // 5) Repair if infeasible
+    // Repair if infeasible
     if (!out_sol->feasible) {
         repair_solution(prob, out_sol, usage, &out_sol->value);
         // Re-evaluate after repair

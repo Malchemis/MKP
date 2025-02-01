@@ -25,7 +25,11 @@ void genetic_algorithm(const Problem *prob,
     // Allocate population
     Individual *population = malloc(population_size * sizeof(Individual));
     Individual *new_population = malloc(population_size * sizeof(Individual));
-
+    // Check for allocation errors
+    if (!population || !new_population) {
+        fprintf(stderr, "Memory allocation error for population.\n");
+        exit(EXIT_FAILURE);
+    }
     // Allocate memory for solutions within each Individual
     for(int i = 0; i < population_size; i++) {
         allocate_solution(&population[i].sol, prob->n);
@@ -37,7 +41,6 @@ void genetic_algorithm(const Problem *prob,
 
     // Track best solution
     int best_index = 0;
-    float best_fitness;
 
     /* GA main loop */
     for(int gen = 0; gen < max_generations; gen++) {
@@ -111,7 +114,7 @@ void genetic_algorithm(const Problem *prob,
 
     // Find best again after the last generation
     best_index = 0;
-    best_fitness = population[0].fitness;
+    float best_fitness = population[0].fitness;
     for(int i = 1; i < population_size; i++) {
         if (population[i].fitness > best_fitness) {
             best_fitness = population[i].fitness;
@@ -132,7 +135,6 @@ void genetic_algorithm(const Problem *prob,
 /* ------------------------------------------------------
  * GA Helper functions
  * ------------------------------------------------------ */
-
 void ga_init_population(const Problem *prob,
                                Individual *population,
                                const int population_size,
@@ -215,11 +217,7 @@ void ga_tournament_selection(const Individual *population,
     ga_copy_individual(&population[second_best_index], parent2);
 }
 
-void ga_single_point_crossover(const Problem *prob,
-                                      const Individual *p1,
-                                      const Individual *p2,
-                                      const Individual *child)
-{
+void ga_single_point_crossover(const Problem *prob, const Individual *p1, const Individual *p2, Individual *child) {
     const int point = rand() % prob->n; // random crossover point
 
     for (int j = 0; j < point; j++) {
@@ -251,10 +249,7 @@ float compute_penalty(const Problem *prob, const Solution *sol, const float pena
     return penalty;
 }
 
-void ga_mutation(const Problem *prob,
-                        const Individual *ind,
-                        const float mutation_rate)
-{
+void ga_mutation(const Problem *prob, Individual *ind, const float mutation_rate) {
     for (int j = 0; j < prob->n; j++) {
         const float r = rand() / (float)RAND_MAX;
         if (r < mutation_rate) {
@@ -263,9 +258,7 @@ void ga_mutation(const Problem *prob,
     }
 }
 
-void ga_repair(const Problem *prob,
-                                Individual *ind)
-{
+void ga_repair(const Problem *prob, Individual *ind) {
     if (!check_feasibility(prob, &ind->sol)) {
         float *usage = calloc(prob->m, sizeof(float));
         compute_usage_from_solution(prob, &ind->sol, usage);
@@ -278,21 +271,19 @@ void ga_repair(const Problem *prob,
     }
 }
 
-void ga_copy_individual(const Individual *src, Individual *dst)
-{
+void ga_copy_individual(const Individual *src, Individual *dst) {
     copy_solution(&src->sol, &dst->sol);
     dst->fitness = src->fitness;
 }
 
-void ga_swap_individuals(Individual *i1, Individual *i2)
-{
+void ga_swap_individuals(Individual *i1, Individual *i2) {
     swap_solutions(&i1->sol, &i2->sol);
     const float temp_fitness = i1->fitness;
     i1->fitness = i2->fitness;
     i2->fitness = temp_fitness;
 }
 
-int cmp_individual_ptrs_desc(const void *a, const void *b) {
+static int cmp_individual_ptrs_desc(const void *a, const void *b) {
     const Individual *ia = *(const Individual * const *)a;
     const Individual *ib = *(const Individual * const *)b;
     if (ia->fitness < ib->fitness)

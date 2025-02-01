@@ -60,6 +60,18 @@ static void multi_start_gd_vns(const Problem *prob, const Arguments *args,
                 args->log_level);
         }
 
+        // Runs GenAlg if time remains
+        if (!time_is_up(start_time, args->max_time)) {
+            genetic_algorithm(prob,
+                              &candidate,
+                              args->population_size,
+                              args->max_generations,
+                              args->mutation_rate,
+                              start_time,
+                              args->max_time,
+                              args->log_level);
+        }
+
         // Evaluate or re-check feasibility if needed
         eval_func(prob, &candidate);
         candidate.feasible = check_feasibility(prob, &candidate);
